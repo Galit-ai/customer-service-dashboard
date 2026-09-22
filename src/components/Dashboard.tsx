@@ -24,19 +24,19 @@ export function Dashboard() {
 
   if (!tickets) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-slate-400">
+      <div className="flex min-h-screen items-center justify-center bg-pink-950 text-pink-200">
         טוען נתונים...
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-pink-950">
       <div className="h-1.5 bg-gradient-to-l from-blue-600 via-violet-600 to-emerald-500" />
       <div className="px-4 py-6 sm:px-8">
         <header className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-900">דאשבורד שירות לקוחות</h1>
-          <p className="mt-1 text-sm text-slate-500">תמונת מצב של פניות הלקוחות — נתוני דוגמה</p>
+          <h1 className="text-2xl font-semibold text-white">דאשבורד שירות לקוחות</h1>
+          <p className="mt-1 text-sm text-pink-200">תמונת מצב של פניות הלקוחות — נתוני דוגמה</p>
         </header>
 
         <div className="space-y-6">
