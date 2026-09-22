@@ -53,6 +53,49 @@ function formatDateTime(iso: string): string {
   })
 }
 
+function noteStorageKey(ticketId: string): string {
+  return `ticket-note:${ticketId}`
+}
+
+function readStoredNote(ticketId: string): string {
+  try {
+    return localStorage.getItem(noteStorageKey(ticketId)) ?? ''
+  } catch {
+    return ''
+  }
+}
+
+// הערות שנציג שירות מוסיף מתוך השיחה עם הלקוח - נשמרות בדפדפן זה בלבד (אין עדיין backend)
+function AgentNotes({ ticketId }: { ticketId: string }) {
+  const [note, setNote] = useState(() => readStoredNote(ticketId))
+
+  function handleChange(value: string) {
+    setNote(value)
+    try {
+      localStorage.setItem(noteStorageKey(ticketId), value)
+    } catch {
+      // localStorage לא זמין (למשל גלישה פרטית) - ההערה עדיין עובדת עד לרענון הדף
+    }
+  }
+
+  return (
+    <div className="mt-3">
+      <label className="text-xs font-medium text-slate-500" htmlFor={`note-${ticketId}`}>
+        הערות נציג (מתוך השיחה עם הלקוח)
+      </label>
+      <textarea
+        id={`note-${ticketId}`}
+        value={note}
+        onChange={(e) => handleChange(e.target.value)}
+        rows={3}
+        placeholder="הוסיפו כאן הערות מתוך השיחה עם הלקוח..."
+        className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+      />
+      <p className="mt-1 text-xs text-slate-400">נשמר אוטומטית בדפדפן הזה</p>
+    </div>
+  )
+}
+
 export function TicketsTable({ tickets, categoryFilter, onCategoryFilterChange }: TicketsTableProps) {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<TicketStatus | typeof ALL>(ALL)
@@ -213,9 +256,12 @@ export function TicketsTable({ tickets, categoryFilter, onCategoryFilterChange }
                   {isExpanded && (
                     <tr className="border-b border-slate-100 bg-slate-50">
                       <td />
-                      <td colSpan={9} className="px-2 py-3 text-slate-600">
-                        <span className="font-medium text-slate-700">תיאור מפורט: </span>
-                        {t.description}
+                      <td colSpan={9} className="px-2 py-3">
+                        <p className="text-slate-600">
+                          <span className="font-medium text-slate-700">תיאור מפורט: </span>
+                          {t.description}
+                        </p>
+                        <AgentNotes ticketId={t.id} />
                       </td>
                     </tr>
                   )}
