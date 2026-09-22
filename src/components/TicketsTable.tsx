@@ -1,12 +1,16 @@
 import { useMemo, useState } from 'react'
 import type { Ticket, TicketCategory, TicketStatus } from '../types/ticket'
-import { CATEGORICAL, STATUS_COLORS } from '../utils/colors'
+import { CATEGORICAL, CATEGORY_COLOR_MAP, STATUS_COLORS } from '../utils/colors'
+
+export const ALL = 'הכל'
 
 interface TicketsTableProps {
   tickets: Ticket[]
+  categoryFilter: TicketCategory | typeof ALL
+  onCategoryFilterChange: (category: TicketCategory | typeof ALL) => void
 }
 
-const ALL = 'הכל'
+const CATEGORIES: TicketCategory[] = ['בעיות תשלום', 'תמיכה טכנית', 'החזרים', 'אחר']
 
 const STATUS_DOT: Record<TicketStatus, string> = {
   פתוח: STATUS_COLORS.warning,
@@ -27,6 +31,19 @@ function StatusBadge({ status }: { status: TicketStatus }) {
   )
 }
 
+function CategoryBadge({ category }: { category: TicketCategory }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-sm text-slate-700">
+      <span
+        className="inline-block h-2 w-2 rounded-full"
+        style={{ backgroundColor: CATEGORY_COLOR_MAP[category] }}
+        aria-hidden
+      />
+      {category}
+    </span>
+  )
+}
+
 function formatDateTime(iso: string): string {
   return new Date(iso).toLocaleString('he-IL', {
     day: '2-digit',
@@ -36,10 +53,9 @@ function formatDateTime(iso: string): string {
   })
 }
 
-export function TicketsTable({ tickets }: TicketsTableProps) {
+export function TicketsTable({ tickets, categoryFilter, onCategoryFilterChange }: TicketsTableProps) {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<TicketStatus | typeof ALL>(ALL)
-  const [category, setCategory] = useState<TicketCategory | typeof ALL>(ALL)
   const [agent, setAgent] = useState<string>(ALL)
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
@@ -56,7 +72,7 @@ export function TicketsTable({ tickets }: TicketsTableProps) {
 
     return tickets.filter((t) => {
       if (status !== ALL && t.status !== status) return false
-      if (category !== ALL && t.category !== category) return false
+      if (categoryFilter !== ALL && t.category !== categoryFilter) return false
       if (agent !== ALL && t.assignedAgent !== agent) return false
 
       const created = new Date(t.createdAt)
@@ -70,11 +86,30 @@ export function TicketsTable({ tickets }: TicketsTableProps) {
 
       return true
     })
-  }, [tickets, search, status, category, agent, fromDate, toDate])
+  }, [tickets, search, status, categoryFilter, agent, fromDate, toDate])
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex flex-wrap items-end gap-3">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs text-slate-500">קטגוריה:</span>
+        <CategoryPill
+          label={ALL}
+          active={categoryFilter === ALL}
+          color={CATEGORICAL.violet}
+          onClick={() => onCategoryFilterChange(ALL)}
+        />
+        {CATEGORIES.map((cat) => (
+          <CategoryPill
+            key={cat}
+            label={cat}
+            active={categoryFilter === cat}
+            color={CATEGORY_COLOR_MAP[cat]}
+            onClick={() => onCategoryFilterChange(cat)}
+          />
+        ))}
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-end gap-3 border-t border-slate-100 pt-4">
         <div className="flex flex-col">
           <label className="text-xs text-slate-500" htmlFor="search">
             חיפוש
@@ -94,12 +129,6 @@ export function TicketsTable({ tickets }: TicketsTableProps) {
           value={status}
           onChange={(v) => setStatus(v as TicketStatus | typeof ALL)}
           options={[ALL, 'פתוח', 'בטיפול', 'סגור']}
-        />
-        <FilterSelect
-          label="קטגוריה"
-          value={category}
-          onChange={(v) => setCategory(v as TicketCategory | typeof ALL)}
-          options={[ALL, 'בעיות תשלום', 'תמיכה טכנית', 'החזרים', 'אחר']}
         />
         <FilterSelect label="נציג" value={agent} onChange={setAgent} options={[ALL, ...agents]} />
 
@@ -153,7 +182,9 @@ export function TicketsTable({ tickets }: TicketsTableProps) {
               <tr key={t.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
                 <td className="px-2 py-2 text-slate-500">{t.id}</td>
                 <td className="px-2 py-2 text-slate-800">{t.subject}</td>
-                <td className="px-2 py-2 text-slate-600">{t.category}</td>
+                <td className="px-2 py-2">
+                  <CategoryBadge category={t.category} />
+                </td>
                 <td className="px-2 py-2">
                   <StatusBadge status={t.status} />
                 </td>
@@ -175,6 +206,30 @@ export function TicketsTable({ tickets }: TicketsTableProps) {
         </table>
       </div>
     </div>
+  )
+}
+
+interface CategoryPillProps {
+  label: string
+  active: boolean
+  color: string
+  onClick: () => void
+}
+
+function CategoryPill({ label, active, color, onClick }: CategoryPillProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="rounded-full border px-3 py-1 text-sm font-medium transition-colors"
+      style={
+        active
+          ? { backgroundColor: color, borderColor: color, color: '#fff' }
+          : { backgroundColor: '#fff', borderColor: color, color }
+      }
+    >
+      {label}
+    </button>
   )
 }
 

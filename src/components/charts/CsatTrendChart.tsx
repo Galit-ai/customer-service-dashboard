@@ -11,7 +11,7 @@ export function CsatTrendChart({ tickets }: CsatTrendChartProps) {
   const data = weeklyCsatTrend(tickets, 5)
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <h3 className="text-sm font-medium text-slate-700">מגמת שביעות רצון (CSAT) — לפי שבוע</h3>
       <div className="mt-2 h-64" dir="ltr">
         <ResponsiveContainer width="100%" height="100%">

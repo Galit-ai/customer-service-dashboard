@@ -11,7 +11,7 @@ export function VolumeTrendChart({ tickets }: VolumeTrendChartProps) {
   const data = dailyVolumeTrend(tickets, 30)
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <h3 className="text-sm font-medium text-slate-700">נפח פניות — 30 הימים האחרונים</h3>
       <div className="mt-2 h-64" dir="ltr">
         <ResponsiveContainer width="100%" height="100%">
