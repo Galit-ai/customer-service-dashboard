@@ -24,28 +24,81 @@ function randomInt(min: number, max: number): number {
 
 const CATEGORIES: readonly TicketCategory[] = ['בעיות תשלום', 'תמיכה טכנית', 'החזרים', 'אחר']
 
-const SUBJECTS_BY_CATEGORY: Record<TicketCategory, readonly string[]> = {
+interface SubjectTemplate {
+  subject: string
+  description: string
+}
+
+const SUBJECTS_BY_CATEGORY: Record<TicketCategory, readonly SubjectTemplate[]> = {
   'בעיות תשלום': [
-    'חיוב כפול בכרטיס האשראי',
-    'התשלום לא עבר בהזמנה',
-    'בקשה לחשבונית מתוקנת',
-    'שאלה לגבי חיוב חודשי',
+    {
+      subject: 'חיוב כפול בכרטיס האשראי',
+      description:
+        'הלקוח דיווח כי חויב פעמיים עבור אותה הזמנה באותו יום. יש לבדוק ביומן הסליקה ולבצע זיכוי על החיוב הכפול.',
+    },
+    {
+      subject: 'התשלום לא עבר בהזמנה',
+      description:
+        'בעת ביצוע ההזמנה התקבלה שגיאה מספק הסליקה וההזמנה לא הושלמה, אך הלקוח מדווח שנוכה סכום מהכרטיס.',
+    },
+    {
+      subject: 'בקשה לחשבונית מתוקנת',
+      description:
+        'הלקוח מבקש לתקן פרט שגוי בחשבונית שהופקה (שם חברה / מספר עוסק) ולהנפיק חשבונית מעודכנת.',
+    },
+    {
+      subject: 'שאלה לגבי חיוב חודשי',
+      description: 'הלקוח אינו מזהה את סכום החיוב החודשי בדף האשראי ומבקש פירוט של הרכיבים הכלולים בו.',
+    },
   ],
   'תמיכה טכנית': [
-    'האפליקציה קורסת בעת התחברות',
-    'לא מצליח לאפס סיסמה',
-    'שגיאה בטעינת הדשבורד',
-    'בעיית סנכרון נתונים',
+    {
+      subject: 'האפליקציה קורסת בעת התחברות',
+      description:
+        'האפליקציה נסגרת מיד לאחר הזנת פרטי ההתחברות, לפני טעינת המסך הראשי. מתרחש במכשירי iOS ו-Android כאחד.',
+    },
+    {
+      subject: 'לא מצליח לאפס סיסמה',
+      description: 'הלינק לאיפוס סיסמה שנשלח למייל אינו נטען, או שמופיעה שגיאה בעת הזנת הסיסמה החדשה.',
+    },
+    {
+      subject: 'שגיאה בטעינת הדשבורד',
+      description: 'הדשבורד נתקע במסך טעינה (loading) ואינו מציג נתונים, לרוב בכניסה הראשונה ביום.',
+    },
+    {
+      subject: 'בעיית סנכרון נתונים',
+      description:
+        'נתונים שעודכנו באפליקציית הנייד אינם מופיעים בגרסת הדסקטופ (והפך) — פער של כמה שעות בסנכרון.',
+    },
   ],
   'החזרים': [
-    'בקשה לביטול הזמנה והחזר כספי',
-    'המוצר הוחזר אך ההחזר לא התקבל',
-    'שאלה על מדיניות החזרים',
+    {
+      subject: 'בקשה לביטול הזמנה והחזר כספי',
+      description: 'הלקוח מבקש לבטל הזמנה שטרם נשלחה ולקבל החזר מלא לאמצעי התשלום המקורי.',
+    },
+    {
+      subject: 'המוצר הוחזר אך ההחזר לא התקבל',
+      description:
+        'הלקוח שלח את המוצר בחזרה (קיים אישור מסירה) לפני למעלה משבוע, אך טרם קיבל זיכוי לכרטיס האשראי.',
+    },
+    {
+      subject: 'שאלה על מדיניות החזרים',
+      description: 'הלקוח מבקש הבהרה לגבי חלון הזמן להחזרה ותנאי הזכאות למוצר שנרכש במבצע.',
+    },
   ],
   'אחר': [
-    'שאלה כללית על השירות',
-    'משוב על חוויית שימוש',
-    'בקשה לעדכון פרטי חשבון',
+    {
+      subject: 'שאלה כללית על השירות',
+      description: 'פנייה כללית ללא בעיה ספציפית — הלקוח מבקש מידע נוסף על השירותים הקיימים.',
+    },
+    {
+      subject: 'משוב על חוויית שימוש',
+      description: 'הלקוח משתף חוויה (חיובית או שלילית) משימוש באתר/באפליקציה, ללא בקשה לפעולה מיידית.',
+    },
+    {
+      subject: 'בקשה לעדכון פרטי חשבון',
+      description: 'הלקוח מבקש לעדכן פרטים אישיים בחשבון — כתובת מייל, מספר טלפון או כתובת למשלוח.',
+    },
   ],
 }
 
@@ -83,6 +136,7 @@ function generateTickets(): Ticket[] {
 
   for (let i = 0; i < TICKET_COUNT; i++) {
     const category = pick(CATEGORIES)
+    const template = pick(SUBJECTS_BY_CATEGORY[category])
     const status = statusForTicket()
     const createdOffsetMinutes = randomInt(0, DAYS_BACK * 24 * 60)
     const createdAt = new Date(NOW.getTime() - createdOffsetMinutes * 60_000)
@@ -102,7 +156,8 @@ function generateTickets(): Ticket[] {
 
     tickets.push({
       id: `T-${1000 + i}`,
-      subject: pick(SUBJECTS_BY_CATEGORY[category]),
+      subject: template.subject,
+      description: template.description,
       category,
       status,
       priority: pick(PRIORITIES),

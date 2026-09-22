@@ -7,6 +7,7 @@ export type TicketPriority = 'נמוך' | 'בינוני' | 'גבוה'
 export interface Ticket {
   id: string
   subject: string
+  description: string
   category: TicketCategory
   status: TicketStatus
   priority: TicketPriority

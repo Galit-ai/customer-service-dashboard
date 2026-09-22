@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { Ticket, TicketCategory, TicketStatus } from '../types/ticket'
 import { CATEGORICAL, CATEGORY_COLOR_MAP, STATUS_COLORS } from '../utils/colors'
 
@@ -59,6 +59,7 @@ export function TicketsTable({ tickets, categoryFilter, onCategoryFilterChange }
   const [agent, setAgent] = useState<string>(ALL)
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const agents = useMemo(
     () => Array.from(new Set(tickets.map((t) => t.assignedAgent))).sort(),
@@ -166,6 +167,7 @@ export function TicketsTable({ tickets, categoryFilter, onCategoryFilterChange }
         <table className="w-full min-w-[860px] text-right text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-slate-500">
+              <th className="w-6 px-2 py-2" aria-hidden />
               <th className="px-2 py-2 font-medium">מזהה</th>
               <th className="px-2 py-2 font-medium">נושא</th>
               <th className="px-2 py-2 font-medium">קטגוריה</th>
@@ -178,26 +180,51 @@ export function TicketsTable({ tickets, categoryFilter, onCategoryFilterChange }
             </tr>
           </thead>
           <tbody>
-            {filtered.map((t) => (
-              <tr key={t.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                <td className="px-2 py-2 text-slate-500">{t.id}</td>
-                <td className="px-2 py-2 text-slate-800">{t.subject}</td>
-                <td className="px-2 py-2">
-                  <CategoryBadge category={t.category} />
-                </td>
-                <td className="px-2 py-2">
-                  <StatusBadge status={t.status} />
-                </td>
-                <td className="px-2 py-2 text-slate-600">{t.priority}</td>
-                <td className="px-2 py-2 text-slate-600">{t.customerName}</td>
-                <td className="px-2 py-2 text-slate-600">{t.assignedAgent}</td>
-                <td className="px-2 py-2 text-slate-500">{formatDateTime(t.createdAt)}</td>
-                <td className="px-2 py-2 text-slate-600">{t.csatScore ?? '—'}</td>
-              </tr>
-            ))}
+            {filtered.map((t) => {
+              const isExpanded = expandedId === t.id
+              return (
+                <Fragment key={t.id}>
+                  <tr
+                    onClick={() => setExpandedId(isExpanded ? null : t.id)}
+                    className="cursor-pointer border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                  >
+                    <td className="px-2 py-2 text-slate-400">
+                      <span
+                        className="inline-block transition-transform"
+                        style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
+                      >
+                        ‹
+                      </span>
+                    </td>
+                    <td className="px-2 py-2 text-slate-500">{t.id}</td>
+                    <td className="px-2 py-2 text-slate-800">{t.subject}</td>
+                    <td className="px-2 py-2">
+                      <CategoryBadge category={t.category} />
+                    </td>
+                    <td className="px-2 py-2">
+                      <StatusBadge status={t.status} />
+                    </td>
+                    <td className="px-2 py-2 text-slate-600">{t.priority}</td>
+                    <td className="px-2 py-2 text-slate-600">{t.customerName}</td>
+                    <td className="px-2 py-2 text-slate-600">{t.assignedAgent}</td>
+                    <td className="px-2 py-2 text-slate-500">{formatDateTime(t.createdAt)}</td>
+                    <td className="px-2 py-2 text-slate-600">{t.csatScore ?? '—'}</td>
+                  </tr>
+                  {isExpanded && (
+                    <tr className="border-b border-slate-100 bg-slate-50">
+                      <td />
+                      <td colSpan={9} className="px-2 py-3 text-slate-600">
+                        <span className="font-medium text-slate-700">תיאור מפורט: </span>
+                        {t.description}
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              )
+            })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={9} className="px-2 py-6 text-center text-slate-400">
+                <td colSpan={10} className="px-2 py-6 text-center text-slate-400">
                   לא נמצאו פניות התואמות לחיפוש/סינון
                 </td>
               </tr>
