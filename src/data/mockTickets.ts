@@ -73,7 +73,10 @@ function statusForTicket(): TicketStatus {
 
 const TICKET_COUNT = 70
 const DAYS_BACK = 30
-const NOW = new Date('2026-09-22T12:00:00Z')
+
+// "עכשיו" קבוע עבור נתוני הדוגמה, כך שמדדים כמו "הגיעו היום" יהיו יציבים
+export const MOCK_NOW = new Date('2026-09-22T12:00:00Z')
+const NOW = MOCK_NOW
 
 function generateTickets(): Ticket[] {
   const tickets: Ticket[] = []
