@@ -2,7 +2,7 @@
 // שלב 1: apify/facebook-posts-scraper — הפוסטים האחרונים בכל דף
 // שלב 2: apify/facebook-comments-scraper — התגובות לפוסטים (שם נמצא הסנטימנט של הלקוחות)
 // שימוש: APIFY_TOKEN=xxx npm run fetch:apify [שם חברה ...]
-// בלי ארגומנטים — כל החברות. עם ארגומנטים (למשל: HOT "Partner TV") — רק הן, והשאר נשארות בקובץ כמות שהן.
+// בלי ארגומנטים — כל המתחרים. עם ארגומנטים (למשל: HOT "Partner TV") — רק הן, והשאר נשארות בקובץ כמות שהן.
 // הטוקן נשאר מקומי ואינו נכנס לקוד הדפדפן.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
@@ -12,14 +12,14 @@ if (!token) {
   process.exit(1)
 }
 
-// חשוב: עדכנו את הכתובות לדפי הפייסבוק הרשמיים בפועל (הכתובות כאן הן ניחוש ולא אומתו)
+// דפי הפייסבוק הציבוריים של המתחרים (נמצאו בחיפוש; כדאי לוודא שהם הדפים הרצויים).
+// No Cable היא חברה בדיונית, ולכן אין לה דף ונתוניה נשארים דגימה בקובץ.
 const PAGES = {
-  'No Cable': 'https://www.facebook.com/nocable',
-  HOT: 'https://www.facebook.com/HOT.net.il',
-  yes: 'https://www.facebook.com/yestv.co.il',
-  'Partner TV': 'https://www.facebook.com/PartnerIL',
-  'Cellcom TV': 'https://www.facebook.com/cellcom.tv',
-  Netflix: 'https://www.facebook.com/NetflixIsrael',
+  HOT: 'https://www.facebook.com/hot.net.il/',
+  yes: 'https://www.facebook.com/tv.yes/',
+  'Partner TV': 'https://www.facebook.com/PartnerIL/',
+  'Cellcom TV': 'https://www.facebook.com/cellcom.official/', // דף סלקום הכללי, אין דף ייעודי לטלוויזיה
+  Netflix: 'https://www.facebook.com/netflixisrael/',
 }
 const FILE = 'src/data/apifyMentions.json'
 const selected = process.argv.slice(2)
