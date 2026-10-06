@@ -1,17 +1,17 @@
 export type Sentiment = 'חיובי' | 'ניטרלי' | 'שלילי'
 
-// פריט גולמי כפי שמוחזר מ-Apify (Reddit Scraper) — רק השדות שבהם משתמשים
-export interface ApifyRedditItem {
+// תגובה גולמית כפי שמוחזרת מ-Apify (Facebook Comments Scraper), לאחר הוספת שם החברה (pageName) —
+// רק השדות שבהם משתמשים
+export interface ApifyFacebookComment {
   id: string
-  url: string
-  username: string
-  title: string
-  body: string
-  communityName: string
-  upVotes: number
-  numberOfComments: number
-  createdAt: string
-  searchTerm: string
+  commentUrl: string
+  postUrl: string
+  profileName: string
+  text: string
+  date: string
+  likesCount: number
+  commentsCount: number
+  pageName: string
 }
 
 // אזכור מנורמל לשימוש הדאשבורד
@@ -19,12 +19,10 @@ export interface Mention {
   id: string
   url: string
   brand: string
-  title: string
-  body: string
-  community: string
+  text: string
   author: string
-  upvotes: number
-  comments: number
+  likes: number
+  replies: number
   createdAt: string
   sentiment: Sentiment
 }

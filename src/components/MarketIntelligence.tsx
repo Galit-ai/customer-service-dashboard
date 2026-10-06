@@ -73,7 +73,7 @@ export function MarketIntelligence() {
         <header className="mb-6">
           <h1 className="text-2xl font-semibold text-white">מחקר שוק — No Cable מול המתחרים</h1>
           <p className="mt-1 text-sm text-pink-200">
-            מה אומרים ב-Reddit על No Cable, על חברות הכבלים והטלוויזיה המתחרות ועל שירות הסטרימינג. הנתונים נאספים באמצעות Apify (Reddit
+            מה אומרים בפייסבוק על No Cable, על חברות הכבלים והטלוויזיה המתחרות ועל שירות הסטרימינג. הנתונים נאספים באמצעות Apify (Facebook
             Scraper) — כרגע מוצגת דגימת נתונים בפורמט הפלט של Apify.
           </p>
         </header>
@@ -115,7 +115,7 @@ export function MarketIntelligence() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <h3 className="text-sm font-medium text-slate-700">סנטימנט לפי חברה</h3>
-              <p className="mt-0.5 text-xs text-slate-400">מספר אזכורים, מחולק לפי טון הפוסט</p>
+              <p className="mt-0.5 text-xs text-slate-400">מספר אזכורים, מחולק לפי טון התגובה</p>
               <div className="mt-2 h-64" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={brands} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
@@ -152,8 +152,8 @@ export function MarketIntelligence() {
           </div>
 
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <h3 className="text-sm font-medium text-slate-700">הפוסטים עם הכי הרבה מעורבות</h3>
-            <p className="mt-0.5 text-xs text-slate-400">מעורבות = הצבעות + 2 × תגובות</p>
+            <h3 className="text-sm font-medium text-slate-700">התגובות עם הכי הרבה מעורבות</h3>
+            <p className="mt-0.5 text-xs text-slate-400">מעורבות = לייקים + 2 × תגובות</p>
             <ul className="mt-3 divide-y divide-slate-100">
               {topPosts.map((m) => (
                 <li key={m.id} className="flex items-start justify-between gap-4 py-3">
@@ -163,12 +163,12 @@ export function MarketIntelligence() {
                       target="_blank"
                       rel="noreferrer"
                       dir="auto"
-                      className="block text-sm font-medium text-slate-900 hover:underline"
+                      className="line-clamp-2 block text-sm font-medium text-slate-900 hover:underline"
                     >
-                      {m.title}
+                      {m.text}
                     </a>
                     <div className="mt-0.5 text-xs text-slate-500">
-                      {m.brand} · <span dir="ltr">{m.community}</span> · ▲ {m.upvotes} · 💬 {m.comments}
+                      {m.brand} · {m.author} · 👍 {m.likes} · 💬 {m.replies}
                     </div>
                   </div>
                   <span

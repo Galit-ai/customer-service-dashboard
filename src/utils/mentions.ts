@@ -55,5 +55,5 @@ export function weeklyTrend(mentions: Mention[]) {
 }
 
 export function engagement(m: Mention): number {
-  return m.upvotes + m.comments * 2
+  return m.likes + m.replies * 2
 }
