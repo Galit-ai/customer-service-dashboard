@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getTickets } from '../services/ticketService'
 import type { Ticket, TicketCategory } from '../types/ticket'
+import { ExchangeRatesCard } from './ExchangeRatesCard'
 import { KpiRow } from './KpiRow'
 import { ALL, TicketsTable } from './TicketsTable'
 import { VolumeTrendChart } from './charts/VolumeTrendChart'
@@ -41,6 +42,8 @@ export function Dashboard() {
 
         <div className="space-y-6">
           <KpiRow tickets={tickets} />
+
+          <ExchangeRatesCard />
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <VolumeTrendChart tickets={tickets} />
