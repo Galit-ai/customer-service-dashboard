@@ -16,7 +16,7 @@ npm run dev
 
 ## מסך מחקר שוק (Apify) — בונוס
 
-הטאב "מחקר שוק (Apify)" מציג אזכורי מתחרים (Zendesk, Freshdesk, Intercom, Help Scout) מ-Reddit: סנטימנט לפי מתחרה, מגמה שבועית והפוסטים עם הכי הרבה מעורבות, עם סינון לפי מתחרה.
+הטאב "מחקר שוק (Apify)" מציג השוואת האזכורים ברשת של No Cable מול מתחרים (HOT, yes, Partner TV, Cellcom TV) ושירות סטרימינג (Netflix), מ-Reddit: סנטימנט לפי חברה, מגמה שבועית והפוסטים עם הכי הרבה מעורבות, עם סינון לפי חברה.
 
 - הנתונים נאספים עם ה-Actor `trudax/reddit-scraper-lite` של [Apify](https://www.apify.com).
 - הקובץ `src/data/apifyMentions.json` מכיל כרגע **דגימת נתונים בפורמט הפלט של Apify** (לא נתונים חיים).

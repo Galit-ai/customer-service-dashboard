@@ -24,6 +24,7 @@ const SENTIMENT_COLOR: Record<Sentiment, string> = {
 }
 
 const ALL = 'הכל'
+const OWN_BRAND = 'No Cable'
 
 export function MarketIntelligence() {
   const [mentions, setMentions] = useState<Mention[] | null>(null)
@@ -60,22 +61,26 @@ export function MarketIntelligence() {
 
   const count = (s: Sentiment) => filtered.filter((m) => m.sentiment === s).length
   const negativePct = filtered.length ? Math.round((count('שלילי') / filtered.length) * 100) : 0
-  const leader = brands[0]
+  const net = (r: { total: number; חיובי: number; שלילי: number }) =>
+    r.total ? Math.round(((r.חיובי - r.שלילי) / r.total) * 100) : 0
+  const own = brands.find((b) => b.brand === OWN_BRAND)
+  const rivals = brands.filter((b) => b.brand !== OWN_BRAND)
+  const rivalsNet = rivals.length ? Math.round(rivals.reduce((sum, b) => sum + net(b), 0) / rivals.length) : 0
 
   return (
     <div className="min-h-screen bg-pink-950">
       <div className="px-4 py-6 sm:px-8">
         <header className="mb-6">
-          <h1 className="text-2xl font-semibold text-white">מחקר שוק — אזכורי מתחרים ברשת</h1>
+          <h1 className="text-2xl font-semibold text-white">מחקר שוק — No Cable מול המתחרים</h1>
           <p className="mt-1 text-sm text-pink-200">
-            מה אומרים ב-Reddit על פלטפורמות שירות הלקוחות המתחרות. הנתונים נאספים באמצעות Apify (Reddit
+            מה אומרים ב-Reddit על No Cable, על חברות הכבלים והטלוויזיה המתחרות ועל שירות הסטרימינג. הנתונים נאספים באמצעות Apify (Reddit
             Scraper) — כרגע מוצגת דגימת נתונים בפורמט הפלט של Apify.
           </p>
         </header>
 
         <div className="space-y-6">
           <div className="flex flex-wrap gap-2">
-            {[ALL, ...brands.map((b) => b.brand)].map((b) => (
+            {[ALL, OWN_BRAND, ...brands.map((b) => b.brand).filter((b) => b !== OWN_BRAND)].map((b) => (
               <button
                 key={b}
                 onClick={() => setBrand(b)}
@@ -100,16 +105,16 @@ export function MarketIntelligence() {
               accent={STATUS_COLORS.critical}
             />
             <StatCard
-              label="המותג המדובר ביותר"
-              value={leader?.brand ?? '—'}
-              sublabel={leader ? `${leader.total} אזכורים` : undefined}
-              accent={CATEGORICAL.violet}
+              label={`ציון סנטימנט ${OWN_BRAND}`}
+              value={own ? `${net(own)}` : '—'}
+              sublabel={`ממוצע מתחרים: ${rivalsNet} (חיובי פחות שלילי, באחוזים)`}
+              accent={own && net(own) >= rivalsNet ? STATUS_COLORS.good : STATUS_COLORS.warning}
             />
           </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <h3 className="text-sm font-medium text-slate-700">סנטימנט לפי מתחרה</h3>
+              <h3 className="text-sm font-medium text-slate-700">סנטימנט לפי חברה</h3>
               <p className="mt-0.5 text-xs text-slate-400">מספר אזכורים, מחולק לפי טון הפוסט</p>
               <div className="mt-2 h-64" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
@@ -130,7 +135,7 @@ export function MarketIntelligence() {
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <h3 className="text-sm font-medium text-slate-700">מגמת אזכורים שבועית</h3>
               <p className="mt-0.5 text-xs text-slate-400">
-                {brand === ALL ? 'כל המתחרים' : brand} · שבוע המתחיל ביום א׳
+                {brand === ALL ? 'כל החברות' : brand} · שבוע המתחיל ביום א׳
               </p>
               <div className="mt-2 h-64" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
@@ -157,8 +162,8 @@ export function MarketIntelligence() {
                       href={m.url}
                       target="_blank"
                       rel="noreferrer"
-                      dir="ltr"
-                      className="block text-left text-sm font-medium text-slate-900 hover:underline"
+                      dir="auto"
+                      className="block text-sm font-medium text-slate-900 hover:underline"
                     >
                       {m.title}
                     </a>

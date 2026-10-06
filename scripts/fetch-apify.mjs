@@ -10,7 +10,7 @@ if (!token) {
 }
 
 const brands = process.argv.slice(2)
-const searches = brands.length ? brands : ['Zendesk', 'Freshdesk', 'Intercom', 'Help Scout']
+const searches = brands.length ? brands : ['No Cable', 'HOT', 'yes', 'Partner TV', 'Cellcom TV', 'Netflix']
 const ACTOR = 'trudax~reddit-scraper-lite'
 
 const url = `https://api.apify.com/v2/acts/${ACTOR}/run-sync-get-dataset-items?token=${token}`

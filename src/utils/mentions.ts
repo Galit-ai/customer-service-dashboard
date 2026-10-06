@@ -1,15 +1,15 @@
 import type { Mention, Sentiment } from '../types/mention'
 
 const POSITIVE = [
-  'love', 'great', 'excellent', 'recommend', 'best', 'easy', 'delightful', 'impressive',
-  'happy', 'smooth', 'fast', 'solid', 'clean', 'improved', 'saved', 'good transparency', 'useful',
+  'מעולה', 'מצוין', 'נהדר', 'מרוצה', 'ממליץ', 'שירות טוב', 'מהיר', 'יציב', 'אמין', 'משתלם',
+  'זולה', 'הוגן', 'כיף', 'נוח', 'השתפר', 'השיפור', 'אדיבה', 'חלקה', 'נעים',
 ]
 const NEGATIVE = [
-  'expensive', 'terrible', 'awful', 'hate', 'slow', 'outage', 'crash', 'bug', 'broken',
-  'frustrating', 'disappointing', 'mess', 'confusing', 'unhelpful', 'annoying', 'surprise', 'lacks', 'missing',
+  'גרוע', 'איטי', 'תקלה', 'תקלות', 'יקר', 'מתסכל', 'נוראי', 'מאכזב', 'מעצבן', 'קריסה', 'קורסת',
+  'הפסקת שידור', 'לא עונים', 'סיוט', 'התעלם', 'נתקע', 'לא הסבירו', 'בלי הסבר', 'מחכה', 'שוקל לבטל',
 ]
 
-// ניתוח סנטימנט פשוט מבוסס מילות מפתח — מספיק להדגמה; ניתן להחליף במודל אמיתי
+// ניתוח סנטימנט פשוט מבוסס מילות מפתח — מספיק להדגמה (מילות מפתח בעברית); ניתן להחליף במודל אמיתי
 export function detectSentiment(text: string): Sentiment {
   const lower = text.toLowerCase()
   const score =
