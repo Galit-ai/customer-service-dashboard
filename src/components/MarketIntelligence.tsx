@@ -158,15 +158,21 @@ export function MarketIntelligence() {
               {topPosts.map((m) => (
                 <li key={m.id} className="flex items-start justify-between gap-4 py-3">
                   <div className="min-w-0">
-                    <a
-                      href={m.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      dir="auto"
-                      className="line-clamp-2 block text-sm font-medium text-slate-900 hover:underline"
-                    >
-                      {m.text}
-                    </a>
+                    {m.url ? (
+                      <a
+                        href={m.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        dir="auto"
+                        className="line-clamp-2 block text-sm font-medium text-slate-900 hover:underline"
+                      >
+                        {m.text}
+                      </a>
+                    ) : (
+                      <span dir="auto" className="line-clamp-2 block text-sm font-medium text-slate-900">
+                        {m.text}
+                      </span>
+                    )}
                     <div className="mt-0.5 text-xs text-slate-500">
                       {m.brand} · {m.author} · 👍 {m.likes} · 💬 {m.replies}
                     </div>

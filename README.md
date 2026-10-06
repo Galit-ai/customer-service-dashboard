@@ -14,6 +14,8 @@ npm run dev
 
 נבנה עם React + TypeScript + Vite + Tailwind CSS + Recharts.
 
+> **שימו לב:** הפרויקט המשיך להתפתח בריפו [no-cable-customer-service](https://github.com/Galit-ai/no-cable-customer-service) (HTML + CSS + JavaScript רגיל, מחובר ל-Airtable). שם נמצאת הגרסה העדכנית והמלאה של מסך מחקר השוק, עם נתונים אמיתיים מ-Apify. הגרסה כאן (React) היא הגרסה הראשונה של המסך, עם נתוני דגימה בלבד.
+
 ## מסך מחקר שוק (Apify) — בונוס
 
 הטאב "מחקר שוק (Apify)" מציג השוואת האזכורים ברשת של No Cable מול מתחרים (HOT, yes, Partner TV, Cellcom TV) ושירות סטרימינג (Netflix), מפייסבוק (תגובות לקוחות בדפי החברות): סנטימנט לפי חברה, מגמה שבועית והתגובות עם הכי הרבה מעורבות, עם סינון לפי חברה.
