@@ -1,9 +1,10 @@
 // אוסף תגובות לקוחות מדפי הפייסבוק הציבוריים של החברות, דרך Apify, ושומר ל-src/data/apifyMentions.json
 // שלב 1: apify/facebook-posts-scraper — הפוסטים האחרונים בכל דף
 // שלב 2: apify/facebook-comments-scraper — התגובות לפוסטים (שם נמצא הסנטימנט של הלקוחות)
-// שימוש: APIFY_TOKEN=xxx npm run fetch:apify
+// שימוש: APIFY_TOKEN=xxx npm run fetch:apify [שם חברה ...]
+// בלי ארגומנטים — כל החברות. עם ארגומנטים (למשל: HOT "Partner TV") — רק הן, והשאר נשארות בקובץ כמות שהן.
 // הטוקן נשאר מקומי ואינו נכנס לקוד הדפדפן.
-import { writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
 const token = process.env.APIFY_TOKEN
 if (!token) {
@@ -19,6 +20,13 @@ const PAGES = {
   'Partner TV': 'https://www.facebook.com/PartnerIL',
   'Cellcom TV': 'https://www.facebook.com/cellcom.tv',
   Netflix: 'https://www.facebook.com/NetflixIsrael',
+}
+const FILE = 'src/data/apifyMentions.json'
+const selected = process.argv.slice(2)
+const unknown = selected.filter((b) => !(b in PAGES))
+if (unknown.length) {
+  console.error(`חברה לא מוכרת: ${unknown.join(', ')}. האפשרויות: ${Object.keys(PAGES).join(', ')}`)
+  process.exit(1)
 }
 const POSTS_PER_PAGE = 5
 const COMMENTS_PER_POST = 20
@@ -36,6 +44,7 @@ async function runActor(actor, input) {
 
 const all = []
 for (const [brand, pageUrl] of Object.entries(PAGES)) {
+  if (selected.length && !selected.includes(brand)) continue
   console.log(`${brand}: מביא פוסטים...`)
   const posts = await runActor('apify~facebook-posts-scraper', {
     startUrls: [{ url: pageUrl }],
@@ -64,5 +73,9 @@ for (const [brand, pageUrl] of Object.entries(PAGES)) {
   }
 }
 
-writeFileSync('src/data/apifyMentions.json', JSON.stringify(all.filter((c) => c.text), null, 2) + '\n')
-console.log(`נשמרו ${all.length} תגובות`)
+const fresh = all.filter((c) => c.text)
+const fetched = new Set(fresh.map((c) => c.pageName))
+// חברה שהתקבלו לה תגובות מוחלפת; השאר נשמרות כפי שהיו בקובץ
+const kept = existsSync(FILE) ? JSON.parse(readFileSync(FILE, 'utf8')).filter((c) => !fetched.has(c.pageName)) : []
+writeFileSync(FILE, JSON.stringify([...kept, ...fresh], null, 2) + '\n')
+console.log(`נשמרו ${fresh.length} תגובות חדשות (${[...fetched].join(', ') || 'אין'})`)
